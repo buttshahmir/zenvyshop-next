@@ -58,7 +58,7 @@ export default function ProductDetailPage() {
   const handleWhatsApp = () => {
     if (!product) return;
     const msg = `Hi! I'm interested in *${product.name}* (${formatPrice(product.price)}). Can you help me with this order?`;
-    window.open(`https://wa.me/923338455459?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/923476301166?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   if (loading) {

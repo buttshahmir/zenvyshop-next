@@ -29,7 +29,7 @@ export default function ContactPage() {
       icon: Phone,
       title: 'Phone',
       details: ['+92 333 845 5459', '+92 21 3XXX XXXX'],
-      action: 'tel:+923338455459',
+      action: 'tel:+923476301166',
     },
     {
       icon: Mail,
@@ -191,7 +191,7 @@ export default function ContactPage() {
                 Prefer instant messaging? Reach us directly on WhatsApp for quick responses and order updates.
               </p>
               <a
-                href="https://wa.me/923338455459"
+                href="https://wa.me/923476301166"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-white text-green-700 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors"
@@ -229,7 +229,7 @@ export default function ContactPage() {
               <p className="text-gray-400 text-sm mb-4">
                 For urgent inquiries regarding existing orders, please call us directly during business hours.
               </p>
-              <a href="tel:+923338455459" className="text-gold font-semibold hover:text-gold-light transition-colors">
+              <a href="tel:+923476301166" className="text-gold font-semibold hover:text-gold-light transition-colors">
                 +92 333 845 5459
               </a>
             </div>

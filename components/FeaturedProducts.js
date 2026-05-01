@@ -13,38 +13,71 @@ export default function FeaturedProducts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    productsAPI.getAll({ featured: 'true' })
-      .then((data) => setProducts(data.products.slice(0, 3)))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    const fetchFeaturedProducts = async () => {
+      try {
+        const data = await productsAPI.getAll({ featured: 'true' });
+
+        // SAFE HANDLING (no crash)
+        const list = data?.products || data || [];
+
+        setProducts(list.slice(0, 3));
+      } catch (error) {
+        console.error('Failed to load featured products:', error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
   }, []);
 
   return (
     <section className="py-16 sm:py-24 bg-offwhite">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <p className="text-gold text-sm tracking-widest uppercase mb-3">Curated For You</p>
+          <p className="text-gold text-sm tracking-widest uppercase mb-3">
+            Curated For You
+          </p>
+
           <h2 className="text-3xl sm:text-4xl font-light text-black mb-4">
             Featured <span className="font-semibold">Collection</span>
           </h2>
+
           <p className="text-gray-500 max-w-xl mx-auto">
             Handpicked pieces that define elegance. Each crafted with our signature anti-tarnish technology.
           </p>
         </motion.div>
 
+        {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {loading
-            ? [...Array(3)].map((_, i) => <ProductCardSkeleton key={i} />)
-            : products.map((product, index) => (
-                <ProductCard key={product._id} product={product} index={index} />
-              ))}
+          {loading ? (
+            [...Array(3)].map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))
+          ) : products.length > 0 ? (
+            products.map((product, index) => (
+              <ProductCard
+                key={product._id}
+                product={product}
+                index={index}
+              />
+            ))
+          ) : (
+            <p className="col-span-3 text-center text-gray-500">
+              No featured products found.
+            </p>
+          )}
         </div>
 
+        {/* Button */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -59,6 +92,7 @@ export default function FeaturedProducts() {
             <ArrowRight size={18} />
           </Link>
         </motion.div>
+
       </div>
     </section>
   );

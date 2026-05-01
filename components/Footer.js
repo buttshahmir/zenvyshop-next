@@ -46,10 +46,10 @@ export default function Footer() {
               Pakistan's premier destination for anti-tarnish jewellery. We believe luxury should be accessible and lasting.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="text-gray-400 hover:text-gold transition-colors" aria-label="Instagram">
+              <a href="https://www.instagram.com/zenvy.shop.pk/#" className="text-gray-400 hover:text-gold transition-colors" aria-label="Instagram">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-gold transition-colors" aria-label="Facebook">
+              <a href="https://www.facebook.com/me/" className="text-gray-400 hover:text-gold transition-colors" aria-label="Facebook">
                 <Facebook size={20} />
               </a>
             </div>
@@ -97,11 +97,11 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone size={16} className="text-gold shrink-0" />
-                <span>+92 333 845 5459</span>
+                <span>+92 347 630 1166</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail size={16} className="text-gold shrink-0" />
-                <span>hello@zenvyshop.pk</span>
+                <span>zenvyofficial.pk@gmail.com</span>
               </li>
               <li className="flex items-start gap-3 text-gray-400 text-sm">
                 <MapPin size={16} className="text-gold shrink-0 mt-0.5" />
@@ -118,9 +118,9 @@ export default function Footer() {
           <p className="text-gray-500 text-xs">
             &copy; {new Date().getFullYear()} ZenvyShop.pk. All rights reserved.
           </p>
-          <p className="text-gray-500 text-xs flex items-center gap-1">
+          {/* <p className="text-gray-500 text-xs flex items-center gap-1">
             Made with <Heart size={12} className="text-gold" /> in Pakistan
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>
