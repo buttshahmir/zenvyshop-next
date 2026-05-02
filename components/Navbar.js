@@ -132,6 +132,17 @@ export default function Navbar() {
                         <Package size={16} />
                         My Orders
                       </Link>
+
+{user.role === 'admin' && (
+  <Link
+    href="/admin"
+    className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-gold hover:bg-white/5 transition-colors text-sm"
+    onClick={() => setUserMenuOpen(false)}
+  >
+    ⚙️ Admin Panel
+  </Link>
+)}
+
                       <button
                         onClick={() => { setUserMenuOpen(false); logout(); }}
                         className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-red-400 hover:bg-white/5 transition-colors text-sm"
