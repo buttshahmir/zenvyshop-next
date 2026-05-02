@@ -13,39 +13,29 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('zenvy_token');
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    const savedUser = localStorage.getItem('zenvy_user');
 
-    // Check token expiry
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.exp * 1000 < Date.now()) {
+    if (token && savedUser) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 > Date.now()) {
+          setUser(JSON.parse(savedUser));
+        } else {
+          localStorage.removeItem('zenvy_token');
+          localStorage.removeItem('zenvy_user');
+        }
+      } catch {
         localStorage.removeItem('zenvy_token');
-        setLoading(false);
-        return;
+        localStorage.removeItem('zenvy_user');
       }
-    } catch {
-      localStorage.removeItem('zenvy_token');
-      setLoading(false);
-      return;
     }
-
-    // Fetch full user from API (includes role from DB)
-    authAPI.getMe()
-      .then((data) => {
-        // Merge API user with token role (belt + suspenders)
-        setUser({ ...data.user });
-      })
-      .catch(() => localStorage.removeItem('zenvy_token'))
-      .finally(() => setLoading(false));
+    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     const data = await authAPI.login({ email, password });
     localStorage.setItem('zenvy_token', data.token);
-    // data.user comes directly from backend — has role
+    localStorage.setItem('zenvy_user', JSON.stringify(data.user));
     setUser(data.user);
     return data;
   };
@@ -53,12 +43,14 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password) => {
     const data = await authAPI.register({ name, email, password });
     localStorage.setItem('zenvy_token', data.token);
+    localStorage.setItem('zenvy_user', JSON.stringify(data.user));
     setUser(data.user);
     return data;
   };
 
   const logout = () => {
     localStorage.removeItem('zenvy_token');
+    localStorage.removeItem('zenvy_user');
     setUser(null);
     router.push('/');
   };
