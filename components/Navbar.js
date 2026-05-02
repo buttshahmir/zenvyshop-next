@@ -144,7 +144,7 @@ export default function Navbar() {
 )}
 
                       <button
-                        onClick={() => { setUserMenuOpen(false); logout(); }}
+                        onClick={() => {setUserMenuOpen(false); logout(); }}
                         className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-red-400 hover:bg-white/5 transition-colors text-sm"
                       >
                         <LogOut size={16} />
