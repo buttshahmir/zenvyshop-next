@@ -6,16 +6,6 @@ import { authAPI } from '@/lib/api';
 
 const AuthContext = createContext(undefined);
 
-// Helper — decode JWT to get user data including role
-const decodeToken = (token) => {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload;
-  } catch {
-    return null;
-  }
-};
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,9 +18,26 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    // Get full user data from API
+    // Check token expiry
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp * 1000 < Date.now()) {
+        localStorage.removeItem('zenvy_token');
+        setLoading(false);
+        return;
+      }
+    } catch {
+      localStorage.removeItem('zenvy_token');
+      setLoading(false);
+      return;
+    }
+
+    // Fetch full user from API (includes role from DB)
     authAPI.getMe()
-      .then((data) => setUser(data.user))
+      .then((data) => {
+        // Merge API user with token role (belt + suspenders)
+        setUser({ ...data.user });
+      })
       .catch(() => localStorage.removeItem('zenvy_token'))
       .finally(() => setLoading(false));
   }, []);
@@ -38,7 +45,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     const data = await authAPI.login({ email, password });
     localStorage.setItem('zenvy_token', data.token);
-    // Use the user object from login response — it has role
+    // data.user comes directly from backend — has role
     setUser(data.user);
     return data;
   };
