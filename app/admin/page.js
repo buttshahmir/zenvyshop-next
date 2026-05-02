@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ordersAPI, productsAPI } from '@/lib/api';
-import { Package, ShoppingBag, TrendingUp, Clock, CheckCircle, Truck, XCircle } from 'lucide-react';
+import { productsAPI } from '@/lib/api';
+import { Package, ShoppingBag, TrendingUp, Clock } from 'lucide-react';
 
 const formatPrice = (price) =>
   new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR', minimumFractionDigits: 0 }).format(price);
@@ -24,7 +24,14 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([ordersAPI.getMyOrders(), productsAPI.getAll()])
+    const token = localStorage.getItem('zenvy_token');
+
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then(r => r.json()),
+      productsAPI.getAll(),
+    ])
       .then(([ordersData, productsData]) => {
         setOrders(ordersData.orders || []);
         setProducts(productsData.products || []);
@@ -114,7 +121,9 @@ export default function AdminDashboard() {
               ))}
               {orders.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-10 text-center text-gray-500">No orders yet</td>
+                  <td colSpan={5} className="px-5 py-10 text-center text-gray-500">
+                    No orders yet
+                  </td>
                 </tr>
               )}
             </tbody>
