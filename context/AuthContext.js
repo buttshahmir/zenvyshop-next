@@ -6,12 +6,21 @@ import { authAPI } from '@/lib/api';
 
 const AuthContext = createContext(undefined);
 
+// Helper — decode JWT to get user data including role
+const decodeToken = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload;
+  } catch {
+    return null;
+  }
+};
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);       // { _id, name, email, role }
-  const [loading, setLoading] = useState(true); // true while we verify the stored token
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // On mount: if a token exists, fetch the current user to validate it
   useEffect(() => {
     const token = localStorage.getItem('zenvy_token');
     if (!token) {
@@ -19,18 +28,17 @@ export function AuthProvider({ children }) {
       return;
     }
 
+    // Get full user data from API
     authAPI.getMe()
       .then((data) => setUser(data.user))
-      .catch(() => {
-        // Token invalid/expired — clear it
-        localStorage.removeItem('zenvy_token');
-      })
+      .catch(() => localStorage.removeItem('zenvy_token'))
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const data = await authAPI.login({ email, password });
     localStorage.setItem('zenvy_token', data.token);
+    // Use the user object from login response — it has role
     setUser(data.user);
     return data;
   };
