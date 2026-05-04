@@ -107,7 +107,7 @@ export default function Navbar() {
                   className="flex items-center gap-1.5 text-gray-300 hover:text-gold transition-colors"
                 >
                   <User size={20} />
-                  <span className="hidden sm:inline text-sm">{user.name.split(' ')[0]}</span>
+                  <span className="hidden sm:inline text-sm">{user?.name.split(' ')[0]}</span>
                   <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
