@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Search, User, LogOut, Package, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Menu, X, Search, User, LogOut, Package, ChevronDown, Settings } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 
@@ -26,10 +26,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => { setIsOpen(false); }, [pathname]);
 
-  // Close user dropdown when clicking outside
   useEffect(() => {
     const handler = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -90,7 +88,6 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-3 sm:gap-5">
-            {/* Search */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               className="text-gray-300 hover:text-gold transition-colors"
@@ -107,7 +104,7 @@ export default function Navbar() {
                   className="flex items-center gap-1.5 text-gray-300 hover:text-gold transition-colors"
                 >
                   <User size={20} />
-                  <span className="hidden sm:inline text-sm">{user?.name.split(' ')[0]}</span>
+                  <span className="hidden sm:inline text-sm">{user.name.split(' ')[0]}</span>
                   <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -124,6 +121,7 @@ export default function Navbar() {
                         <p className="text-white text-sm font-medium truncate">{user.name}</p>
                         <p className="text-gray-500 text-xs truncate">{user.email}</p>
                       </div>
+
                       <Link
                         href="/orders"
                         className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-gold hover:bg-white/5 transition-colors text-sm"
@@ -133,18 +131,19 @@ export default function Navbar() {
                         My Orders
                       </Link>
 
-{user.role === 'admin' && (
-  <Link
-    href="/admin"
-    className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-gold hover:bg-white/5 transition-colors text-sm"
-    onClick={() => setUserMenuOpen(false)}
-  >
-    ⚙️ Admin Panel
-  </Link>
-)}
+                      {user.role === 'admin' && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-gold hover:bg-white/5 transition-colors text-sm"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <Settings size={16} />
+                          Admin Panel
+                        </Link>
+                      )}
 
                       <button
-                        onClick={() => {setUserMenuOpen(false); logout(); }}
+                        onClick={() => { setUserMenuOpen(false); logout(); }}
                         className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:text-red-400 hover:bg-white/5 transition-colors text-sm"
                       >
                         <LogOut size={16} />
@@ -174,7 +173,6 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Hamburger */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden text-gray-300 hover:text-gold transition-colors"
@@ -233,6 +231,9 @@ export default function Navbar() {
                 {user ? (
                   <>
                     <Link href="/orders" className="block text-gray-300 text-sm">My Orders</Link>
+                    {user.role === 'admin' && (
+                      <Link href="/admin" className="block text-gold text-sm">Admin Panel</Link>
+                    )}
                     <button onClick={logout} className="block text-red-400 text-sm">Sign Out</button>
                   </>
                 ) : (
