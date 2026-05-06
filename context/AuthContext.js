@@ -15,14 +15,32 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('zenvy_token');
     const savedUser = localStorage.getItem('zenvy_user');
 
-    if (token && savedUser) {
+    if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.exp * 1000 > Date.now()) {
-          setUser(JSON.parse(savedUser));
-        } else {
+
+        // Token expired — clean up
+        if (payload.exp * 1000 <= Date.now()) {
           localStorage.removeItem('zenvy_token');
           localStorage.removeItem('zenvy_user');
+          setLoading(false);
+          return;
+        }
+
+        if (savedUser) {
+          // Normal path: zenvy_user exists, use it directly
+          setUser(JSON.parse(savedUser));
+        } else {
+          // Fallback: zenvy_user missing but token is valid
+          // Happens when only zenvy_token was stored (old sessions)
+          const userData = {
+            _id: payload.id,
+            role: payload.role,        // ← this is what shows Admin Panel
+            email: payload.email,
+            name: payload.name || 'User',
+          };
+          localStorage.setItem('zenvy_user', JSON.stringify(userData));
+          setUser(userData);
         }
       } catch {
         localStorage.removeItem('zenvy_token');
